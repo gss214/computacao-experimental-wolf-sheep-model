@@ -10,10 +10,12 @@ class Sheep(RandomWalker):
     """
 
     energy = None
+    disease = False
 
-    def __init__(self, unique_id, pos, model, moore, energy=None):
+    def __init__(self, unique_id, pos, model, moore, energy=None, disease=False):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
+        self.disease = disease
 
     def step(self):
         """
@@ -24,7 +26,10 @@ class Sheep(RandomWalker):
 
         if self.model.grass:
             # Reduce energy
-            self.energy -= 1
+            if self.disease:
+                self.energy -= 2
+            else:
+                self.energy -= 1
 
             # If there is grass available, eat it
             this_cell = self.model.grid.get_cell_list_contents([self.pos])

@@ -10,6 +10,7 @@ Replication of the model found in NetLogo:
 """
 
 import mesa
+from numpy import true_divide
 
 from wolf_sheep.scheduler import RandomActivationByTypeFiltered
 from wolf_sheep.agents import Sheep, Wolf, GrassPatch
@@ -35,6 +36,8 @@ class WolfSheep(mesa.Model):
     grass_regrowth_time = 30
     sheep_gain_from_food = 4
 
+    probability_of_disease = 0.2
+
     verbose = False  # Print-monitoring
 
     description = (
@@ -53,6 +56,7 @@ class WolfSheep(mesa.Model):
         grass=False,
         grass_regrowth_time=30,
         sheep_gain_from_food=4,
+        probability_of_disease = 0.2
     ):
         """
         Create a new Wolf-Sheep model with the given parameters.
@@ -80,6 +84,7 @@ class WolfSheep(mesa.Model):
         self.grass = grass
         self.grass_regrowth_time = grass_regrowth_time
         self.sheep_gain_from_food = sheep_gain_from_food
+        self.probability_of_disease = probability_of_disease
 
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
@@ -87,6 +92,9 @@ class WolfSheep(mesa.Model):
             {
                 "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                 "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                "Sheep With Disease": lambda m: m.schedule.get_type_count(
+                    Sheep, lambda x: x.disease
+                ),
                 "Grass": lambda m: m.schedule.get_type_count(
                     GrassPatch, lambda x: x.fully_grown
                 ),
@@ -98,7 +106,11 @@ class WolfSheep(mesa.Model):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
             energy = self.random.randrange(2 * self.sheep_gain_from_food)
-            sheep = Sheep(self.next_id(), (x, y), self, True, energy)
+            disease_factor = self.random.random()
+            is_sick = False
+            if (disease_factor < self.probability_of_disease):
+                is_sick = True
+            sheep = Sheep(self.next_id(), (x, y), self, True, energy, is_sick)
             self.grid.place_agent(sheep, (x, y))
             self.schedule.add(sheep)
 

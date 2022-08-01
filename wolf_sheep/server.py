@@ -10,7 +10,12 @@ def wolf_sheep_portrayal(agent):
 
     portrayal = {}
 
-    if type(agent) is Sheep:
+    if type(agent) is Sheep and agent.disease:
+        portrayal["Shape"] = "wolf_sheep/resources/sheep_with_disease.png"
+        portrayal["scale"] = 0.9
+        portrayal["Layer"] = 1
+
+    elif type(agent) is Sheep and not agent.disease:
         portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
         # https://icons8.com/web-app/433/sheep
         portrayal["scale"] = 0.9
@@ -41,9 +46,10 @@ def wolf_sheep_portrayal(agent):
 canvas_element = mesa.visualization.CanvasGrid(wolf_sheep_portrayal, 20, 20, 500, 500)
 chart_element = mesa.visualization.ChartModule(
     [
-        {"Label": "Wolves", "Color": "#AA0000"},
-        {"Label": "Sheep", "Color": "#666666"},
-        {"Label": "Grass", "Color": "#00AA00"},
+        {"Label": "Wolves", "Color": "red"},
+        {"Label": "Sheep", "Color": "blue"},
+        {"Label": "Sheep With Disease", "Color": "yellow"},
+        {"Label": "Grass", "Color": "green"},
     ]
 )
 
@@ -71,6 +77,7 @@ model_params = {
         "Wolf Gain From Food Rate", 20, 1, 50
     ),
     "sheep_gain_from_food": mesa.visualization.Slider("Sheep Gain From Food", 4, 1, 10),
+    "probability_of_disease": mesa.visualization.Slider("Probabilty of Disease", 0.04, 0.01, 1.0, 0.01),
 }
 
 server = mesa.visualization.ModularServer(
