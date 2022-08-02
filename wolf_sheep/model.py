@@ -18,7 +18,7 @@ from wolf_sheep.agents import Sheep, Wolf, GrassPatch
 
 class WolfSheep(mesa.Model):
     """
-    Wolf-Sheep Predation Model
+    Wolf-Sheep Disease Model
     """
 
     height = 20
@@ -41,7 +41,7 @@ class WolfSheep(mesa.Model):
     verbose = False  # Print-monitoring
 
     description = (
-        "A model for simulating wolf and sheep (predator-prey) ecosystem modelling."
+        "A model for simulating wolf and sheep disease ecosystem modelling."
     )
 
     def __init__(
@@ -89,7 +89,7 @@ class WolfSheep(mesa.Model):
         self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
         self.datacollector = mesa.DataCollector(
-            {
+            model_reporters={
                 "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                 "Sheep": lambda m: m.schedule.get_type_count(Sheep),
                 "Sheep With Disease": lambda m: m.schedule.get_type_count(
@@ -98,7 +98,8 @@ class WolfSheep(mesa.Model):
                 "Grass": lambda m: m.schedule.get_type_count(
                     GrassPatch, lambda x: x.fully_grown
                 ),
-            }
+            },
+            agent_reporters={}
         )
 
         # Create sheep:

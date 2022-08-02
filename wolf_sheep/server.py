@@ -3,7 +3,6 @@ import mesa
 from wolf_sheep.agents import Wolf, Sheep, GrassPatch
 from wolf_sheep.model import WolfSheep
 
-
 def wolf_sheep_portrayal(agent):
     if agent is None:
         return
@@ -81,6 +80,6 @@ model_params = {
 }
 
 server = mesa.visualization.ModularServer(
-    WolfSheep, [canvas_element, chart_element], "Wolf Sheep Predation", model_params
+    WolfSheep, [canvas_element, chart_element], "Wolf Sheep Disease", model_params
 )
 server.port = 8521

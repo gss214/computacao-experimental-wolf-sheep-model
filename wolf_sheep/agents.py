@@ -48,8 +48,12 @@ class Sheep(RandomWalker):
             # Create a new sheep:
             if self.model.grass:
                 self.energy /= 2
+            is_sick = False 
+            if self.disease and self.random.random() < 0.5:
+                is_sick = True
+
             lamb = Sheep(
-                self.model.next_id(), self.pos, self.model, self.moore, self.energy
+                self.model.next_id(), self.pos, self.model, self.moore, self.energy, is_sick
             )
             self.model.grid.place_agent(lamb, self.pos)
             self.model.schedule.add(lamb)
